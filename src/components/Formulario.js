@@ -6,6 +6,7 @@ const Formulario = ({
   guardarArtista,
   guardarCancion,
   guardarBusquedaLetra,
+  guardarInfo,
 }) => {
   //state
   const [busqueda, guardarBusqueda] = useState({
@@ -32,9 +33,13 @@ const Formulario = ({
     //api call
     const consultarAPI = async () => {
       const url = `https://api.lyrics.ovh/v1/${artista}/${cancion}`;
-      const resultado = await axios(url);
-      guardarLetra(resultado.data.lyrics);
-      if (resultado.status === 200) {
+      const url2 = `https://www.theaudiodb.com/api/v1/json/1/search.php?s=${artista}`;
+
+      const [letra, info] = await Promise.all([axios(url), axios(url2)]);
+
+      guardarLetra(letra.data.lyrics);
+      guardarInfo(info.data.artists[0]);
+      if (letra.status === 200) {
         guardarCancion(cancion);
         guardarArtista(artista);
       }
