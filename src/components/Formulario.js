@@ -1,7 +1,12 @@
 import React, { useState } from "react";
 import axios from "axios";
 
-const Formulario = ({ guardarLetra, guardarBusquedaLetra }) => {
+const Formulario = ({
+  guardarLetra,
+  guardarArtista,
+  guardarCancion,
+  guardarBusquedaLetra,
+}) => {
   //state
   const [busqueda, guardarBusqueda] = useState({
     artista: "",
@@ -29,6 +34,10 @@ const Formulario = ({ guardarLetra, guardarBusquedaLetra }) => {
       const url = `https://api.lyrics.ovh/v1/${artista}/${cancion}`;
       const resultado = await axios(url);
       guardarLetra(resultado.data.lyrics);
+      if (resultado.status === 200) {
+        guardarCancion(cancion);
+        guardarArtista(artista);
+      }
     };
     consultarAPI();
   };
