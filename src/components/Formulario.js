@@ -1,6 +1,7 @@
 import React, { useState } from "react";
+import axios from "axios";
 
-const Formulario = () => {
+const Formulario = ({ guardarLetra, guardarBusquedaLetra }) => {
   //state
   const [busqueda, guardarBusqueda] = useState({
     artista: "",
@@ -22,11 +23,23 @@ const Formulario = () => {
       return;
     }
     guardarError(false);
+    guardarBusquedaLetra(busqueda);
     //api call
+    const consultarAPI = async () => {
+      const url = `https://api.lyrics.ovh/v1/${artista}/${cancion}`;
+      const resultado = await axios(url);
+      guardarLetra(resultado.data.lyrics);
+    };
+    consultarAPI();
   };
 
   return (
     <div className="bg-info">
+      {error ? (
+        <h1 className="alert alert-danger text-center p-2">
+          Todos los campos son obligatorios!
+        </h1>
+      ) : null}
       <div className="row">
         <div className="container">
           <form
@@ -70,7 +83,6 @@ const Formulario = () => {
               >
                 Buscar
               </button>
-              {error ? <h1>Todos los campos son requeridos!</h1> : null}
             </fieldset>
           </form>
         </div>
